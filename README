@@ -1,3 +1,5 @@
 Simple but flexible IRC relay bot
 
-Usage: python relay.py config.xml
+Usage: python relayx.py config.xml
+
+Check the test config file for using the !say commmand
