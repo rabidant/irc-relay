@@ -3,31 +3,35 @@
 
   <!-- servers: define servers and channels to be connected -->
 
-  <server name="ozinger"
-          hostname="irc.ozinger.org"
-          port="16667"
+  <server name="server1"
+          hostname="irc.serverexample.com"
+          port="portnumber"
           use_ssl="true"
-          nickname="트위스티드릴"
-          username="GNOMERELAY"
-          realname="그놈릴레이 TWISTED"
+          nickname="relay"
+          username="relay"
+          realname="relay"
           encoding="UTF-8" >
-    <channel channel="#setzer" />
-    <channel channel="#setzer2" />
+    <channel channel="#channel" />
   </server>
 
-  <server name="hanirc"
-          hostname="irc.hanirc.org"
-          port="6667"
-          nickname="트위스티드릴"
-          username="GNOMERELAY"
-          realname="그놈릴레이 TWISTED"
-          encoding="CP949" >
-    <channel channel="#setzer" />
+  <server name="server2"
+          hostname="irc.serverexample2.com"
+          port="6697"
+          use_ssl="true"
+          nickname="relay"
+          username="relay"
+          realname="relay"
+          encoding="UTF-8" >
+    <channel channel="#channel" />
   </server>
 
   <!--
       relay groups: define how to relay messages
 
+      fulloutput means message attributes (server, nick, channel) will be desplyed.
+
+      saycommand - only sends the messages that start with !say, no message attributes will
+      be displayed
       outputformat attribute is a Python template string with
       ${nickname}, ${servername}, ${channel}, ${message}.
 
@@ -38,23 +42,34 @@
       wrapping limit.
   -->
 
-  <relaygroup name="test"
+  <relaygroup name="fulloutput"
       outputformat="&lt;${nickname}@${servername}/${channel}&gt;  ${message}"
       ignorepattern="^&lt;\S+&gt;  "
       maxmessagebytes="342" >
 	
-    <node server="ozinger"
-          channel="#setzer"
+    <node server="server1"
+          channel="#channel"
           inputenable="true"
+          outputenable="false"/>
+    <node server="server2"
+          channel="#channel"
+          inputenable="false"
+          outputenable="true" />
+  </relaygroup>
+
+  <relaygroup name="saycommand"
+      outputformat="${message}"
+      ignorepattern="((?!^\!say ).)*$"
+      maxmessagebytes="342" >
+
+    <node server="server1"
+          channel="#channel"
+          inputenable="false"
           outputenable="true"/>
-    <node server="ozinger"
-          channel="#setzer2"
+    <node server="server2"
+          channel="#channel"
           inputenable="true"
-          outputenable="true" />
-    <node server="hanirc"
-          channel="#setzer"
-          inputenable="true"
-          outputenable="true" />
+          outputenable="false" />
   </relaygroup>
 
 </config>
