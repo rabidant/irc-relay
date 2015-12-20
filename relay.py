@@ -262,11 +262,11 @@ class RelayServer:
 
         for relaygroup in self.get_input_relay_groups(server, channel):
             try:
-                match = relaygroup['ignorepattern'].match(msg)
                 if relaygroup['ignorepattern'].match(msg):
                     continue
             except KeyError:
                 pass
+
 
             for node in get_output_nodes(relaygroup):
                 if node['server'] == server and node['channel'] == channel:
@@ -294,9 +294,12 @@ class RelayServer:
                     # use the value of the group
                     max_bytes = relaygroup['maxmessagebytes']
 
-                send_relay(output_format, server, channel, user, msg, max_bytes,
-                           msgtype, proto, ochannel)
 
+                if "!say " in msg:
+                    send_relay(output_format, server, channel, user, msg[5:], max_bytes,
+                           msgtype, proto, ochannel)
+                else: send_relay(output_format, server, channel, user, msg, max_bytes,
+                           msgtype, proto, ochannel)
     def on_pubmsg(self, server, channel, user, msg):
         print u'PUBMSG %s@%s/%s: %s' % (user, server, channel, msg)
         
